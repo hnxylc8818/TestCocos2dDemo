@@ -3,7 +3,7 @@ var PlayLayer = cc.Layer.extend({
     SushiSprites: null,
     score: 0,
     scoreLabel: null,
-    timeout: 10,
+    timeout: 60,
     timeoutLabel: null,
     // 初始化
     ctor: function () {
