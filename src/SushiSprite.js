@@ -40,8 +40,8 @@ var SushiSprite = cc.Sprite.extend({
                         // 添加得分
                         target.getParent().addScore();
                         // 把精灵从父类中移除
-                        target.getParent().removeSushiByIndex(target.index - 1);
                         target.removeFromParent();
+                        target = undefined;
 
                     },target));
                     target.runAction(seqAc);

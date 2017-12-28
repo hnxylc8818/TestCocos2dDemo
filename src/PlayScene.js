@@ -3,7 +3,7 @@ var PlayLayer = cc.Layer.extend({
     SushiSprites: null,
     score: 0,
     scoreLabel: null,
-    timeout: 60,
+    timeout: 30,
     timeoutLabel: null,
     // 初始化
     ctor: function () {
@@ -50,7 +50,6 @@ var PlayLayer = cc.Layer.extend({
     },
     // 添加掉落的精灵
     addSushi: function () {
-
         var sushi = new SushiSprite("#sushi_1n.png");
         var size = cc.winSize;
 
@@ -78,11 +77,17 @@ var PlayLayer = cc.Layer.extend({
         for (var i = 0; i < this.SushiSprites.length; i++) {
             cc.log("removeSushi...");
             // cc.log("------>removeSushiY:" + this.SushiSprites[i].y);
-            if (0 >= this.SushiSprites[i].y) {
-                cc.log("------>remove:" + i);
-                // cc.log("------>removeY:" + this.SushiSprites[i].y);
-                this.SushiSprites[i].removeFromParent();
-                this.SushiSprites[i] = undefined;
+            if (this.SushiSprites[i] !== undefined) {
+                if (0 >= this.SushiSprites[i].y) {
+                    cc.log("------>remove:" + i);
+                    // cc.log("------>removeY:" + this.SushiSprites[i].y);
+                    this.SushiSprites[i].removeFromParent();
+                    this.SushiSprites[i] = undefined;
+                    this.SushiSprites.splice(i, 1);
+                    i = i - 1;
+                }
+            }else {
+                cc.log("undefined：" + i);
                 this.SushiSprites.splice(i, 1);
                 i = i - 1;
             }
@@ -92,24 +97,14 @@ var PlayLayer = cc.Layer.extend({
     removeAllSushi:function () {
         for (var i = 0; i < this.SushiSprites.length; i++) {
             cc.log("removeAllSushi...");
-            this.SushiSprites[i].removeFromParent();
-            this.SushiSprites[i] = undefined;
-            this.SushiSprites.splice(i, 1);
-            i = i - 1;
-        }
-    },
-    // 把指定索引的精灵从SushiSprites数组中移除
-    removeSushiByIndex: function (index) {
-        if (isNaN(index) || index > this.SushiSprites.length) {
-            return false;
-        }
-        for (var i = 0, n = 0; i < this.length; i++) {
-            if (this.SushiSprites[i] !== this[index]) {
-                cc.log("--------------");
-                this.SushiSprites[n++] = this.SushiSprites[i]
+            if (this.SushiSprites[i] !== undefined) {
+                this.SushiSprites[i].removeFromParent();
+                this.SushiSprites[i] = undefined;
+            }else {
+                cc.log("undefined：" + i);
             }
         }
-        this.SushiSprites.length -= 1;
+        this.SushiSprites.splice(0,this.SushiSprites.length);
     },
     // 60s倒计时，为0时显示游戏结束Layer
     timer: function () {
