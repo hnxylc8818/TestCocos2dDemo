@@ -5,6 +5,8 @@ var PlayLayer = cc.Layer.extend({
     scoreLabel: null,
     timeout: 60,
     timeoutLabel: null,
+    dropSpeed:4,
+    updateInterval:1,
     // 初始化
     ctor: function () {
         this._super();
@@ -37,7 +39,7 @@ var PlayLayer = cc.Layer.extend({
         this.addChild(this.timeoutLabel, 5);
 
         // 精灵刷新定时器
-        this.schedule(this.update, 1, 16 * 1024, 1);
+        this.schedule(this.update, this.updateInterval, 16 * 1024, this.updateInterval);
         // 倒计时定时器
         this.schedule(this.timer, 1, this.timeout, 1);
 
@@ -64,7 +66,7 @@ var PlayLayer = cc.Layer.extend({
 
         this.addChild(sushi, 5);
 
-        var dropAction = cc.MoveTo.create(4, cc.p(sushi.x, -30));
+        var dropAction = cc.MoveTo.create(this.dropSpeed, cc.p(sushi.x, -30));
         sushi.runAction(dropAction);
     },
     // 更新场景中的精灵，增加新的精灵，移除屏幕底部的精灵
@@ -172,6 +174,28 @@ var PlayLayer = cc.Layer.extend({
         // 倒计时时间
         this.timeout -= 1;
         this.timeoutLabel.setString("" + this.timeout);
+        var isUpgradeDiff = false;
+        if (this.timeout === 40){
+            this.dropSpeed = 3;
+            this.updateInterval = 0.8;
+            isUpgradeDiff = true;
+        }else if (this.timeout === 30){
+            this.dropSpeed = 2;
+            this.updateInterval = 0.6;
+            isUpgradeDiff = true;
+        }else if (this.timeout === 20){
+            this.dropSpeed = 1;
+            this.updateInterval = 0.4;
+            isUpgradeDiff = true;
+        }else if (this.timeout === 5){
+            this.dropSpeed = 0.5;
+            this.updateInterval = 0.2;
+            isUpgradeDiff = true;
+        }
+        if (isUpgradeDiff){
+            this.unschedule(this.update);
+            this.schedule(this.update, this.updateInterval, 16 * 1024, this.updateInterval);
+        }
     }
 });
 
